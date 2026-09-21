@@ -30,13 +30,6 @@ jobs:
           manylinux: 2_28
           before-script-linux: |
             dnf install -y openssl-devel perl-core || yum install -y openssl-devel perl-core
-      - name: Build GPU backend (CUDA)
-        run: |
-          cargo build --release --features gpu-cuda
-          mkdir -p gpu-bundle
-          cp target/release/lib_core.so gpu-bundle/_core_gpu.so || true
-          find target/release -maxdepth 1 -name "*.so*" -exec cp {} gpu-bundle/ \;
-          cd gpu-bundle && zip -r ../dist/vigilo-stream-gpu-linux-x86_64.zip .
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
@@ -59,14 +52,6 @@ jobs:
         with:
           target: ${{ matrix.target }}
           args: --release --out dist --find-interpreter
-      - name: Build GPU backend (DirectML)
-        shell: bash
-        run: |
-          cargo build --release --features gpu-directml
-          mkdir -p gpu-bundle
-          cp target/release/_core.dll gpu-bundle/_core_gpu.pyd
-          find target/release -maxdepth 1 -name "*.dll" -exec cp {} gpu-bundle/ \;
-          cd gpu-bundle && 7z a -tzip ../dist/vigilo-stream-gpu-windows-x86_64.zip .
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
@@ -89,13 +74,6 @@ jobs:
         with:
           target: ${{ matrix.target }}
           args: --release --out dist --find-interpreter
-      - name: Build GPU backend (CoreML)
-        run: |
-          RUSTFLAGS="-C link-arg=-undefined -C link-arg=dynamic_lookup" cargo build --release --features gpu-coreml
-          mkdir -p gpu-bundle
-          cp target/release/lib_core.dylib gpu-bundle/_core_gpu.so || true
-          find target/release -maxdepth 1 -name "*.dylib*" -exec cp {} gpu-bundle/ \;
-          cd gpu-bundle && zip -r ../dist/vigilo-stream-gpu-macos-arm64.zip .
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
@@ -140,13 +118,9 @@ jobs:
           name: vigilo-stream ${{ github.ref_name }}
           files: dist/*
           generate_release_notes: true
-      - name: Separate PyPI wheels from GPU release archives
-        run: |
-          mkdir -p pypi-dist
-          cp dist/*.whl pypi-dist/ 2>/dev/null || true
-          cp dist/*.tar.gz pypi-dist/ 2>/dev/null || true
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          packages-dir: pypi-dist
+          packages-dir: dist
+
 

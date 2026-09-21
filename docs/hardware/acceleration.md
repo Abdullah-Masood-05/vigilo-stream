@@ -4,6 +4,17 @@
 
 ---
 
+## Repository branches: CPU vs GPU builds
+
+The `vigilo-stream` repository maintains separate dedicated branches:
+
+| Branch | Target | Description |
+| :--- | :--- | :--- |
+| **`main`** *(default)* | **CPU Optimized** | Pure, lightweight CPU engine (~18 MB wheel). Default branch used for PyPI distribution and standard deployments. |
+| **`gpu`** | **Hardware Accelerated** | Dedicated GPU branch containing DirectML, CUDA, and CoreML build pipelines for separate GPU releases. |
+
+---
+
 ## CPU vs GPU architecture
 
 ```mermaid
