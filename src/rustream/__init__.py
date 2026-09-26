@@ -22,6 +22,7 @@ from vigilo_stream import (
     device_info,
     download_gpu_backend,
     enable_gpu,
+    get_hardware_guidance,
     is_gpu_cached,
 )
 
@@ -45,6 +46,7 @@ __all__ = [
     "device_info",
     "download_gpu_backend",
     "enable_gpu",
+    "get_hardware_guidance",
     "is_gpu_cached",
 ]
 

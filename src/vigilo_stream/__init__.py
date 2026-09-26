@@ -26,6 +26,7 @@ from ._core import (
 from .gpu import (
     detect_gpu_support,
     download_gpu_backend,
+    get_hardware_guidance,
     is_gpu_cached,
     load_gpu_backend,
 )
@@ -206,6 +207,8 @@ __all__ = [
     "device_info",
     "download_gpu_backend",
     "enable_gpu",
+    "get_hardware_guidance",
     "is_gpu_cached",
 ]
+
 

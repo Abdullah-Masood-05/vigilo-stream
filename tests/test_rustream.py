@@ -180,3 +180,10 @@ def test_gpu_detection_and_device_handling():
     is_cached = vigilo_stream.is_gpu_cached(vigilo_stream.__version__)
     assert isinstance(is_cached, bool)
 
+    guidance = vigilo_stream.get_hardware_guidance()
+    assert isinstance(guidance, dict)
+    assert "intel_igpu" in guidance
+    assert "amd_apu" in guidance
+    assert "11th Gen" in guidance["intel_igpu"]["recommended_generations"]
+    assert "Ryzen 6000" in guidance["amd_apu"]["recommended_generations"]
+

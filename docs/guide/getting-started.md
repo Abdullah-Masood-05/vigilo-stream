@@ -35,6 +35,11 @@ import rustream as vigilo_stream
   - Windows 10 / 11 (x86_64)
   - Ubuntu 20.04+ / Debian 11+ (x86_64)
   - macOS 12+ (Apple Silicon arm64 or Intel x86_64)
+- **Hardware acceleration (optional)**:
+  - **Integrated GPUs (iGPUs / APUs)**: Supported via DirectML. For real-time performance, **Intel 11th Gen Core and newer** (Iris Xe / Intel Arc) or **AMD Ryzen 6000 series and newer** (RDNA 2 / RDNA 3, e.g. Radeon 680M / 780M) are recommended. Older integrated graphics run best on the default CPU engine.
+  - **Discrete GPUs**: NVIDIA GeForce/RTX, AMD Radeon RX, or Intel Arc.
+  - **Apple Silicon**: M1, M2, M3, M4 (CoreML / Metal).
+  - *See full details in the [Hardware & GPU acceleration guide](/hardware/acceleration).*
 - **Optional**: OpenCV (`opencv-python` or `opencv-python-headless`) for video display and HUD rendering.
 
 ## Model weights

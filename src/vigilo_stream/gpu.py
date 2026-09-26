@@ -24,9 +24,17 @@ from typing import Any, Tuple
 def detect_gpu_support() -> Tuple[bool, str]:
     """Detect if the current machine has compatible GPU hardware.
 
+    Note on Integrated GPUs (iGPUs / APUs):
+        DirectML supports DirectX 12 compatible integrated GPUs as well as discrete cards.
+        For optimal inference throughput:
+        - Intel iGPUs: Recommended on 11th Gen Core and newer (Iris Xe / Intel Arc).
+        - AMD APUs: Recommended on Ryzen 6000 series and newer (RDNA 2/3 / Radeon 680M/780M).
+        Older iGPUs (Intel UHD 620/630, AMD Vega) run best using the default CPU engine.
+
     Returns:
         (is_supported, backend_name_or_reason)
     """
+
     sys_name = platform.system()
 
     if sys_name == "Windows":
@@ -61,7 +69,45 @@ def detect_gpu_support() -> Tuple[bool, str]:
     return False, f"Unsupported OS for GPU acceleration: {sys_name}"
 
 
+def get_hardware_guidance() -> dict[str, Any]:
+    """Return hardware compatibility and performance recommendations for CPU vs GPU inference.
+
+    Returns structured guidance covering:
+    - Intel integrated GPUs (recommended: 11th Gen Core and newer with Iris Xe / Intel Arc).
+    - AMD integrated GPUs (recommended: Ryzen 6000 series and newer with RDNA 2/3 / Radeon 680M/780M).
+    - Discrete GPUs (NVIDIA, AMD Radeon, Intel Arc).
+    - Apple Silicon (M1-M4).
+    """
+    return {
+        "intel_igpu": {
+            "recommended_generations": "11th Gen Core (Tiger Lake, Alder Lake, Raptor Lake, Core Ultra / Meteor Lake, Lunar Lake) and newer",
+            "recommended_gpus": ["Intel Iris Xe Graphics (80-96 EUs)", "Intel Arc Graphics (Xe-LPG / Xe2)"],
+            "notes": "Features DP4a hardware instructions for accelerated INT8/FP16 dot products. On 10th Gen and older (Gen 9/9.5 UHD 620/630), CPU mode performs equal to or faster than iGPU.",
+        },
+        "amd_apu": {
+            "recommended_generations": "Ryzen 6000, 7000, 8000, and Ryzen AI 300 series (Zen 3+, Zen 4, Zen 5) and newer",
+            "recommended_gpus": ["Radeon 660M / 680M (RDNA 2)", "Radeon 740M / 760M / 780M (RDNA 3)", "Radeon 880M / 890M (RDNA 3.5)"],
+            "notes": "Features RDNA 2/3/3.5 with WMMA matrix acceleration and high-bandwidth LPDDR5/DDR5. Older Vega APUs (Ryzen 2000-5000) are supported via DirectX 12, but CPU mode is typically comparable.",
+        },
+        "discrete_gpus": {
+            "nvidia": "GeForce GTX 1060+, RTX 20/30/40/50 series, RTX Ada / Quadro (DirectML on Windows, CUDA on Linux)",
+            "amd": "Radeon RX 5000, 6000, 7000 series (DirectML on Windows)",
+            "intel": "Intel Arc A380, A580, A750, A770, B-series (DirectML on Windows)",
+        },
+        "apple_silicon": {
+            "models": "M1, M2, M3, M4 (Base, Pro, Max, Ultra)",
+            "provider": "CoreML (Apple Neural Engine + Metal GPU)",
+        },
+        "best_practices": [
+            "Use dual-channel RAM on laptops/APUs for maximum shared memory bandwidth.",
+            "Keep official GPU drivers updated (Intel Arc/Iris Xe or AMD Adrenalin).",
+            "Set Windows power profile to Balanced or Best Performance to avoid power-saving throttling.",
+        ],
+    }
+
+
 def get_platform_tag() -> str:
+
     """Return the release archive platform tag."""
     sys_name = platform.system().lower()
     machine = platform.machine().lower()
