@@ -264,6 +264,35 @@ curl -sSL -o models/mobileone_s0_gaze.onnx https://github.com/yakhyo/gaze-estima
 curl -sSL -o models/yolox_nano.onnx https://github.com/Megvii-BaseDetection/YOLOX/releases/download/0.1.1rc0/yolox_nano.onnx
 ```
 
+## Hardware & GPU acceleration
+
+`vigilo-stream` ships with a fast, multithreaded CPU engine by default (~18 MB wheel). For hardware acceleration, it provides on-demand dynamic execution providers for Windows, Linux, and macOS:
+
+| Platform | Execution Provider | Hardware Support |
+| :--- | :--- | :--- |
+| **Windows** | **DirectML** (DirectX 12) | NVIDIA GeForce/RTX, AMD Radeon, Intel Arc / Iris Xe, Qualcomm |
+| **Linux** | **CUDA** | NVIDIA discrete GPUs (Driver + CUDA runtime) |
+| **macOS** | **CoreML** (Metal / ANE) | Apple Silicon (M1, M2, M3, M4) |
+
+### Integrated GPU (iGPU) recommendations
+
+GPU acceleration is fully functional on integrated graphics via DirectML. For real-time inference throughput:
+- **Intel iGPUs**: **Recommended for 11th Gen Core and newer** (Tiger Lake, Alder Lake, Raptor Lake, Core Ultra / Meteor Lake, Lunar Lake) with **Intel Iris Xe Graphics** or **Intel Arc Graphics**. Earlier 10th Gen and older processors (Gen 9/9.5 UHD 620/630) lack DP4a deep learning instructions, so the default multi-threaded CPU engine performs equal to or faster than the iGPU.
+- **AMD APUs**: **Recommended for AMD Ryzen 6000 series and newer** (Zen 3+, Zen 4, Zen 5) featuring **RDNA 2, RDNA 3, or RDNA 3.5** integrated graphics (e.g., Radeon 680M, 780M, 890M) with hardware WMMA / matrix acceleration. Earlier Vega-based APUs (Ryzen 2000–5000) are supported, but CPU mode is typically comparable.
+- **Memory Tip**: Ensure system RAM is configured in **dual-channel** mode, as integrated GPUs share unified memory bandwidth with the CPU.
+
+```python
+import vigilo_stream
+
+# Run on GPU (downloads and loads platform backend on first use if missing)
+pipeline = vigilo_stream.Pipeline(device="gpu")
+
+# Automatic selection: uses GPU if already cached/available, falls back to CPU
+pipeline = vigilo_stream.Pipeline(device="auto")
+```
+
+For full details, benchmarks, and advanced configuration, see the [Hardware Acceleration Documentation](https://abdullah-masood-05.github.io/vigilo-stream/hardware/acceleration).
+
 ## Architecture
 
 ```
@@ -310,10 +339,12 @@ uv run pytest -v tests/
   - **Windows**: Microsoft DirectML (DirectX 12) acceleration for NVIDIA, AMD, Intel Arc, and Qualcomm GPUs.
   - **Linux**: NVIDIA CUDA acceleration.
   - **macOS**: Apple CoreML / Metal acceleration for Apple Silicon (M1–M4).
+- **Tested Integrated GPU (iGPU) Compatibility**: Verified support on integrated graphics; optimal performance recommended on Intel 11th Gen Core+ (Iris Xe / Arc) and AMD Ryzen 6000+ (RDNA 2/3 / Radeon 680M/780M).
 - **Dynamic Hardware Detection & Lazy Download**: Keeps default PyPI package lightweight (~18 MB); downloads platform GPU runtimes on first use when requested.
 - **Multi-Device Pipeline Support**: Added `device="auto"`, `device="gpu"`, and `device="cpu"` parameters to `Pipeline`.
 - **Runtime Provider Inspection**: Added `device_info()`, `detect_gpu_support()`, and `enable_gpu()` APIs.
 - **Official Documentation Site**: Full VitePress documentation website with dark/light themes published to GitHub Pages.
+
 
 ### v0.1.1
 
