@@ -34,7 +34,7 @@ export default withMermaid(
         { text: 'Architecture', link: '/architecture/overview' },
         { text: 'Hardware & GPU', link: '/hardware/acceleration' },
         {
-          text: 'v1.0.1',
+          text: 'v1.0.2',
           items: [
             { text: 'PyPI Package', link: 'https://pypi.org/project/vigilo-stream/' },
             { text: 'GitHub Releases', link: 'https://github.com/Abdullah-Masood-05/vigilo-stream/releases' },

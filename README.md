@@ -333,6 +333,10 @@ uv run pytest -v tests/
 
 ## Release notes
 
+### v1.0.2
+
+- Added Python 3.14 to the CI test matrix and package classifiers.
+
 ### v1.0.1
 
 - **Cross-Platform On-Demand GPU Acceleration**:
