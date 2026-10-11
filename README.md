@@ -6,6 +6,9 @@
 [![Rust](https://img.shields.io/badge/Rust-1.80+-000000?logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![Maturin](https://img.shields.io/badge/Maturin-1.15-purple)](https://github.com/PyO3/maturin)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/Abdullah-Masood-05/vigilo-stream?style=social&logo=github)](https://github.com/Abdullah-Masood-05/vigilo-stream/stargazers)
+
+> ⭐ **Enjoying vigilo-stream?** If it's useful to you, please [star it on GitHub](https://github.com/Abdullah-Masood-05/vigilo-stream). It's free and it helps other developers find it.
 
 Zero-copy multi-modal stream fusion engine for real-time AI pipelines in Python.
 
