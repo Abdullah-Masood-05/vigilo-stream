@@ -30,7 +30,7 @@ import rustream as vigilo_stream
 
 ## System requirements
 
-- **Python**: 3.9, 3.10, 3.11, 3.12, 3.13, or 3.14.
+- **Python**: 3.9, 3.10, 3.11, 3.12, 3.13, 3.14, or 3.15.
 - **Operating systems**:
   - Windows 10 / 11 (x86_64)
   - Ubuntu 20.04+ / Debian 11+ (x86_64)
